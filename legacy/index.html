@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>E85 Sync - Rhythm Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <div class="hero">
+                <h1 class="glitch" data-text="E85 SYNC">E85 SYNC</h1>
+                <p class="subtitle">A Beginner-Friendly Rhythm Experience</p>
+                <p class="song-info">Song: sincerely lue - E85</p>
+            </div>
+            <div class="controls-hint">
+                <div class="hint-item">
+                    <span class="key">←</span> / <span class="key">TAP LEFT</span>
+                    <p>Left Lane</p>
+                </div>
+                <div class="hint-item">
+                    <span class="key">→</span> / <span class="key">TAP RIGHT</span>
+                    <p>Right Lane</p>
+                </div>
+            </div>
+            <button id="start-btn" class="primary-btn">START SESSION</button>
+            <div id="file-status" class="status-bar"></div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="hud">
+                <div class="hud-left">
+                    <div class="score-container">
+                        <span class="label">SCORE</span>
+                        <span id="score">000000</span>
+                    </div>
+                    <div class="accuracy-container">
+                        <span class="label">ACCURACY</span>
+                        <span id="accuracy">100.00%</span>
+                    </div>
+                </div>
+                <div class="hud-center">
+                    <div id="combo-container">
+                        <span id="combo">0</span>
+                        <span class="combo-label">COMBO</span>
+                    </div>
+                </div>
+                <div class="hud-right">
+                    <div class="progress-bar">
+                        <div id="progress-fill"></div>
+                    </div>
+                    <span id="time-display">0:00 / 0:00</span>
+                    <div id="sync-status">LIVE AUDIO SYNC</div>
+                </div>
+            </div>
+
+            <div id="judgment-display"></div>
+
+            <div class="lanes-container">
+                <div class="lane" id="lane-left">
+                    <div class="hit-zone">
+                        <div class="hit-indicator"></div>
+                    </div>
+                    <div class="lane-label">LEFT</div>
+                </div>
+                <div class="lane" id="lane-right">
+                    <div class="hit-zone">
+                        <div class="hit-indicator"></div>
+                    </div>
+                    <div class="lane-label">RIGHT</div>
+                </div>
+                <div id="notes-layer"></div>
+            </div>
+
+            <div id="input-regions">
+                <div id="region-left" class="input-region"></div>
+                <div id="region-right" class="input-region"></div>
+            </div>
+
+            <button id="pause-btn">ESC</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h2>SESSION COMPLETE</h2>
+            <div class="result-stats">
+                <div class="stat">
+                    <span class="label">FINAL SCORE</span>
+                    <span id="final-score">0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">ACCURACY</span>
+                    <span id="final-accuracy">0%</span>
+                </div>
+                <div class="stat">
+                    <span class="label">MAX COMBO</span>
+                    <span id="max-combo">0</span>
+                </div>
+            </div>
+            <div class="judgment-counts">
+                <div class="count-item perfect">PERFECT: <span id="count-perfect">0</span></div>
+                <div class="count-item great">GREAT: <span id="count-great">0</span></div>
+                <div class="count-item good">GOOD: <span id="count-good">0</span></div>
+                <div class="count-item miss">MISS: <span id="count-miss">0</span></div>
+            </div>
+            <button id="restart-btn" class="primary-btn">PLAY AGAIN</button>
+        </div>
+
+        <!-- Debug Panel -->
+        <div id="debug-panel">
+            <div class="debug-header">
+                <h3>DEBUG & TUNING</h3>
+                <button id="close-debug">×</button>
+            </div>
+            <div class="debug-content">
+                <div class="debug-group">
+                    <label>BPM: <span id="val-bpm">120</span></label>
+                    <input type="range" id="input-bpm" min="40" max="240" value="120">
+                </div>
+                <div class="debug-group">
+                    <label>OFFSET (ms): <span id="val-offset">0</span></label>
+                    <input type="range" id="input-offset" min="-500" max="500" value="0">
+                </div>
+                <div class="debug-group">
+                    <label>NOTE SPEED: <span id="val-speed">1.0</span></label>
+                    <input type="range" id="input-speed" min="0.5" max="3.0" step="0.1" value="1.0">
+                </div>
+                <div class="debug-group">
+                    <label>LEAD TIME (s): <span id="val-lead">2.0</span></label>
+                    <input type="range" id="input-lead" min="1.0" max="4.0" step="0.1" value="2.0">
+                </div>
+                <div class="debug-group">
+                    <label>SIMPLIFY: <span id="val-simplify">0.05</span></label>
+                    <input type="range" id="input-simplify" min="0" max="0.2" step="0.01" value="0.05">
+                </div>
+                <div class="debug-group">
+                    <label>QUANTIZE: <span id="val-quantize">0.1</span></label>
+                    <input type="range" id="input-quantize" min="0" max="0.5" step="0.05" value="0.1">
+                </div>
+                <div class="debug-group">
+                    <label>HOLD THR (s): <span id="val-hold">0.3</span></label>
+                    <input type="range" id="input-hold" min="0.1" max="1.0" step="0.05" value="0.3">
+                </div>
+                <div class="debug-group">
+                    <label>VOLUME: <span id="val-vol">0.5</span></label>
+                    <input type="range" id="input-vol" min="0" max="1" step="0.05" value="0.5">
+                </div>
+                <div class="debug-group">
+                    <label>PERFECT (s): <span id="val-perfect">0.05</span></label>
+                    <input type="range" id="input-perfect" min="0.01" max="0.1" step="0.01" value="0.05">
+                </div>
+                <div class="debug-group">
+                    <label>MISS (s): <span id="val-miss">0.25</span></label>
+                    <input type="range" id="input-miss" min="0.1" max="0.5" step="0.05" value="0.25">
+                </div>
+                <div class="debug-controls">
+                    <button id="toggle-autoplay">AUTOPLAY: OFF</button>
+                    <button id="toggle-silent">SILENT MODE: OFF</button>
+                    <button id="apply-debug">RESTART CHART</button>
+                </div>
+            </div>
+        </div>
+        <button id="open-debug">DEBUG</button>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="game-audio" preload="auto">
+        <source src="./assets/audio/song.mp3" type="audio/mpeg">
+        <source src="./assets/audio/song.wav" type="audio/wav">
+    </audio>
+
+    <script src="game.js"></script>
+</body>
+</html>
