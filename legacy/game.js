@@ -157,6 +157,31 @@ class Game {
             if (this.config.silentMode) this.elements.audio.pause();
             else if (this.state.isPlaying) this.elements.audio.play();
         });
+
+        const chartInput = document.getElementById('input-chart');
+        const loadBtn = document.getElementById('load-chart-btn');
+
+        loadBtn.addEventListener('click', () => chartInput.click());
+        chartInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    this.state.sourceChart = data;
+                    this.config.bpm = data.header.bpm || 120;
+                    this.elements.debug.inputs.bpm.value = this.config.bpm;
+                    this.elements.debug.vals.bpm.textContent = this.config.bpm;
+                    alert("Chart loaded successfully!");
+                } catch (err) {
+                    console.error("Failed to parse chart:", err);
+                    alert("Failed to parse chart JSON.");
+                }
+            };
+            reader.readAsText(file);
+        });
     }
 
     setupAudio() {
